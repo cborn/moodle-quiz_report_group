@@ -73,14 +73,11 @@ class quiz_group_report extends quiz_default_report {
             $groupingid = $groupingrecord->groupingid;
         }
 
-
         $boolhasattempts = quiz_has_attempts($quiz->id);
 
-
-
-         // pramas for both Forms
+         // params for both Forms
         $formparams = array('quizid' => $quiz->id, 'idnumber' => $cm->id,  'hasattempts' => $boolhasattempts);
-        $toform = array("sel_groupingid"=>$groupingid/*, 'hasattempts'=>$bool_hasattempts*/);
+        $toform = array("sel_groupingid"=>$groupingid);
 
 
 
