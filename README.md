@@ -7,13 +7,14 @@ Sub-plugin of Moodle Quiz to enable the group notion for the quiz.
 Must be install under `.../mod/quiz/report/group`.  
 Available in French and English.
 
-Works on moodle 3.1 -> 3.8
+Works on moodle 3.1 -> 4.1
 Not tested on Moodle 3.7, see https://github.com/cborn/moodle_quiz_group for proposed fixed. 
 
 ### How it works
 
 ##### Set up and usage
 Creates a menu entry under Quiz > Report > Group quiz.
+For Modole 4.0 and later, the menu is under Quiz > Results and in the drop down menu you can choose : "group quiz"
 The plugin is then set up from there, by selecting the grouping to be used.
 
 Students are grouped using the course grouping and group tools.
