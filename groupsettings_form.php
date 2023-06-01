@@ -44,23 +44,15 @@ class quiz_group_settings_form extends moodleform {
 
         $mform->addElement('header', 'quizgroupsubmission', get_string('quizgroup', 'quiz_group'));
 
-        // todo : fix hasattempt --> kills action button return url (bad quiz id)
+        // Todo : fix hasattempt --> kills action button return url (bad quiz id).
         // if attempt block edit.
-        /* $mform->addElement('hidden', 'hasattempts');
-         $mform->setType('hasattempts',PARAM_BOOL);
-         $mform->setDefault('hasattempts', false);
-
-         if($this->_customdata['hasattempts']===true){
-             $mform->addElement('html', "<p style='color: red; background-color: #FFFECE; padding: 1px 10px;'>".get_string('quiz_has_attempts', 'quiz_group')."</p> <br/>");
-            // $mform->setDefault('hasattempts', true);
-         }*/
 
         $mform->addElement('html', "<p>".get_string('info_bygroup', 'quiz_group')."</p>");
         $mform->addElement('html', "<p><em>".get_string('warning_group', 'quiz_group')."</em></p></br></br>");
 
         $mform->addElement('html', "<h4>".get_string('title_groupingselect', 'quiz_group')."</h4>");
 
-        // get grouping list from course
+        // Get grouping list from course.
         $groupings = groups_get_all_groupings($COURSE->id);
         $options = array();
         $options[0] = get_string('no_grouping', 'quiz_group');
@@ -68,17 +60,15 @@ class quiz_group_settings_form extends moodleform {
             $options[$grouping->id] = $grouping->name;
         }
 
-        // create select element and pre-select current value
+        // Create select element and pre-select current value.
         $mform->addElement('select', 'sel_groupingid', get_string('teamsubmissiongroupingid', 'assign'), $options);
 
-        //submit button
+        // Submit button.
         $mform->addElement('submit', 'savechanges', get_string('savechanges', 'quiz_group'));
-        // $mform->disabledIf('submitbutton', 'hasattempts', 'eq',true);
-        // $mform->disabledIf('sel_groupingid', 'hasattempts', 'eq',true);
-
     }
 
-    function validation($data, $files) {
+    public function validation($data, $files) {
         // No form validation needed yet.
+        return [];
     }
 }

@@ -23,31 +23,31 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-// catch attempt started
+// Catch attempt started.
 $observers = array(
     array(
         'eventname' => '\mod_quiz\event\attempt_started',
         'callback' => 'quiz_group_observer::attempt_started',
     ),
 
-    // catch attempt submitted
+    // Catch attempt submitted.
     array(
         'eventname' => '\mod_quiz\event\attempt_submitted',
         'callback' => 'quiz_group_observer::attempt_submitted',
     ),
 
-    // catch attempt abandoned
+    // Catch attempt abandoned.
     array(
         'eventname' => '\mod_quiz\event\attempt_abandoned',
         'callback' => 'quiz_group_observer::attempt_abandoned',
     ),
-    // catch attempt deleted
+    // Catch attempt deleted.
     array(
         'eventname' => '\mod_quiz\event\attempt_deleted',
         'callback' => 'quiz_group_observer::attempt_deleted',
     ),
 
-    // group event and course reset
+    // Group event and course reset.
     array(
         'eventname' => '\core\event\course_reset_started',
         'callback' => 'quiz_group_observer::course_reset_started',

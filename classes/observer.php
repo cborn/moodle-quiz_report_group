@@ -29,7 +29,7 @@ require_once($CFG->dirroot . '/mod/quiz/report/group/locallib.php');
  * @copyright 2017 Camille Tardy, University of Geneva
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  **/
-class quiz_group_observer{
+class quiz_group_observer {
 
     /**
      * Event processor - attempt started
@@ -48,32 +48,38 @@ class quiz_group_observer{
         $groupingid = get_groupquiz_groupingid($quizid);
 
         if ($groupingid == null || $groupingid == 0) {
-            // if grp_quiz is not enabled do nothing
-
+            // If grp_quiz is not enabled do nothing.
         } else {
-            //check if a user from the same group is trying to attempt quiz when we already have an attempt for this group.
+            // Check if a user from the same group is trying to attempt quiz when we already have an attempt for this group.
             $usergrp = get_user_group_for_groupquiz($attempt['userid'], $quizid, $attempt['courseid']);
 
-            $attemptgrpindb = $DB->get_records('quiz_group_attempts', array('quizid' => $quizid, 'groupid' => $usergrp, 'groupingid' => $groupingid));
+            $attemptgrpindb = $DB->get_records(
+                'quiz_group_attempts',
+                array('quizid' => $quizid, 'groupid' => $usergrp, 'groupingid' => $groupingid)
+            );
             if (!empty($attemptgrpindb)) {
-                // An attempt already exist for this group block current user attempt
+                // An attempt already exist for this group block current user attempt.
                 $grpattemptid = 0;
-                $grpname = $DB->get_field('groups', 'name', array('id'=>$usergrp));
-                //return to view quiz page with message  : warning(yellow) --> NOTIFY_WARNING // error(red) --> NOTIFY_ERROR
-                redirect(new moodle_url('/mod/quiz/view.php', array('id' => $cm->id)), get_string('group_attempt_already_created', 'quiz_group', $grpname), null, \core\output\notification::NOTIFY_ERROR);
+                $grpname = $DB->get_field('groups', 'name', array('id' => $usergrp));
+                // Return to view quiz page with message  : warning(yellow) --> NOTIFY_WARNING // error(red) --> NOTIFY_ERROR.
+                redirect(
+                    new moodle_url('/mod/quiz/view.php', array('id' => $cm->id)),
+                    get_string('group_attempt_already_created', 'quiz_group', $grpname),
+                    null,
+                    \core\output\notification::NOTIFY_ERROR
+                );
 
             } else {
-                // no attempt yet for this group : proceed with current user
+                // No attempt yet for this group : proceed with current user.
 
                 $groupattempt = quiz_group_attempt_to_groupattempt_dbobject($attempt, $quizid, $usergrp, $groupingid);
 
-                //save in DB
+                // Save in DB.
                 $grpattemptid = $DB->insert_record('quiz_group_attempts', $groupattempt, true);
             }
 
             return $grpattemptid;
         }
-
 
     }
 
@@ -96,23 +102,23 @@ class quiz_group_observer{
         $groupingid = get_groupquiz_groupingid($quizid);
 
         if ($groupingid == null || $groupingid == 0) {
-            // of grp_quiz is not enabled do nothing
+            // If grp_quiz is not enabled do nothing.
         } else {
 
             $gid = get_user_group_for_groupquiz($userid, $quizid, $courseid);
 
-            //retrieve grp attempt object
+            // Retrieve grp attempt object.
             $grpattempt = $DB->get_record('quiz_group_attempts', array('groupid' => $gid, 'quizid' => $quizid));
 
             if (!empty($grpattempt)) {
-                //edit grp attempt
+                // Edit grp attempt.
                 $grpattempt->attemptid = $attemptid;
-                //save in DB
+                // Save in DB.
                 $DB->update_record('quiz_group_attempts',  $grpattempt, false);
             } else {
-                //ERROR : Grp attempt not in DB
-                //create grp_attempt if not in DB
-                create_groupattempt_from_attempt($attempt,$courseid);
+                // ERROR : Grp attempt not in DB
+                // create grp_attempt if not in DB.
+                create_groupattempt_from_attempt($attempt, $courseid);
             }
         }
 
@@ -131,16 +137,15 @@ class quiz_group_observer{
 
         $attempt = $event->get_data();
         $quizid = $attempt['other']['quizid'];
-       // $attemptid = $attempt['objectid'];
         $userid = $attempt['relateduserid'];
 
-        //attempt can be null in grp_attempt if attempt never submitted by user
-        //better to retreive attempt via quizid and userid
+        // Attempt can be null in grp_attempt if attempt never submitted by user
+        // better to retreive attempt via quizid and userid.
 
-        //delete record in DB
+        // Delete record in DB.
         $DB->delete_records('quiz_group_attempts', array('quizid' => $quizid, 'userid' => $userid));
 
-        return true ;
+        return true;
     }
 
     /**
@@ -156,18 +161,8 @@ class quiz_group_observer{
         $attempt = $event->get_data();
         $quizid = $attempt['other']['quizid'];
         $userid = $attempt['other']['userid'];
-      //  $courseid = $attempt['other']['courseid'];
 
-       /* $attemptid = $attempt['other']['$attemptid'];
-
-        if($attemptid !== null){
-            //if we know the attempt id and if it exist in DB use
-            $DB->delete_records('quiz_group_attempts', array('quizid'=>$quiz_id, 'attemptid'=>$attempt_id));
-        }else{}*/
-
-       // $groupid = get_user_group_for_groupquiz($userid, $quizid, $courseid);
-
-        //delete record in DB for group in quiz
+        // Delete record in DB for group in quiz.
         $DB->delete_records('quiz_group_attempts', array('quizid' => $quizid, 'userid' => $userid));
 
         return true;

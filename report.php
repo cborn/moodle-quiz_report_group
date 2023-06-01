@@ -44,16 +44,15 @@ class quiz_group_report extends quiz_default_report {
     protected $questions;
     protected $cm;
     protected $quiz;
-    protected $context;
+    protected $course;
 
     /**
-     * @param the $quiz
-     * @param the $cm
-     * @param this $course
+     * @param $cm the course-module for this quiz.
+     * @param $course the coures we are in.
+     * @param $quiz this quiz.
      */
     public function display($quiz, $cm, $course) {
         global $DB;
-     //   global $OUTPUT;
 
         $this->quiz = $quiz;
         $this->cm = $cm;
@@ -63,42 +62,36 @@ class quiz_group_report extends quiz_default_report {
         $pageoptions['id'] = $cm->id;
         $pageoptions['quizid'] = $quiz->id;
 
-
-        // retrieve current grouping value for the given quizid return false if not found
-        $groupingrecord = $DB->get_record('quiz_group', array('quizid'=>$quiz->id), 'id, groupingid', 'IGNORE_MISSING');
+        // Retrieve current grouping value for the given quizid return false if not found.
+        $groupingrecord = $DB->get_record('quiz_group', array('quizid' => $quiz->id), 'id, groupingid', 'IGNORE_MISSING');
 
         $groupingid = 0;
-        // if grouping id exist use the ID else set to 0 (-> no grouping selected)
+        // If grouping id exist use the ID else set to 0 (-> no grouping selected).
         if ($groupingrecord !== false) {
             $groupingid = $groupingrecord->groupingid;
         }
 
-
         $boolhasattempts = quiz_has_attempts($quiz->id);
 
-
-
-         // pramas for both Forms
+         // Params for both Forms.
         $formparams = array('quizid' => $quiz->id, 'idnumber' => $cm->id,  'hasattempts' => $boolhasattempts);
-        $toform = array("sel_groupingid"=>$groupingid/*, 'hasattempts'=>$bool_hasattempts*/);
+        $toform = array("sel_groupingid" => $groupingid);
 
+        // Create quiz group setting form.
+        $mform = new quiz_group_settings_form(null, $formparams, 'get');
 
-
-        // create quiz group setting form
-        $mform = new quiz_group_settings_form($formparams, 'get');
-
-        // if cancel do nothing
+        // If cancel do nothing.
         if ($mform->is_cancelled()) {
-            //return to view quiz page
+            // Return to view quiz page.
             redirect(new moodle_url('/mod/quiz/view.php', array('id' => $cm->id)), get_string('canceledit', 'quiz_group'));
 
-            // if edited get edited info.
+            // If edited get edited info.
         } else if ($fromform = $mform->get_data()) {
-            // should retrieve sel_groupingid value here
+            // Should retrieve sel_groupingid value here.
             $groupingidupdated = $fromform->sel_groupingid;
 
             if ($groupingrecord == false) {
-                // no existing record, create one
+                // No existing record, create one.
                 $record = new stdClass();
                 $record->groupingid = $groupingidupdated;
                 $record->quizid = $quiz->id;
@@ -106,45 +99,42 @@ class quiz_group_report extends quiz_default_report {
                 $DB->insert_record('quiz_group', $record, false);
 
             } else {
-                // existing record, update it
-                $groupingobj = array('id' => $groupingrecord->id , 'groupingid' =>  $groupingidupdated);
+                // Existing record, update it.
+                $groupingobj = array('id' => $groupingrecord->id , 'groupingid' => $groupingidupdated);
 
-                $DB->update_record('quiz_group', $groupingobj, $bulk=false);
+                $DB->update_record('quiz_group', $groupingobj, $bulk = false);
             }
 
             $finalgroupingname = get_string('no_group_string', 'quiz_group');
             if ($groupingidupdated > 0) {
-                $dbgrouping = $DB->get_record('groupings', array('id'=>$groupingidupdated), 'name', 'IGNORE_MISSING');
+                $dbgrouping = $DB->get_record('groupings', array('id' => $groupingidupdated), 'name', 'IGNORE_MISSING');
                 $finalgroupingname = $dbgrouping->name;
             }
 
-            // return to view quiz page with validation message
-            redirect(new moodle_url('/mod/quiz/view.php', array('id' => $cm->id)), get_string('settings_edited', 'quiz_group', $finalgroupingname));
+            // Return to view quiz page with validation message.
+            redirect(
+                new moodle_url('/mod/quiz/view.php', array('id' => $cm->id)),
+                get_string('settings_edited', 'quiz_group', $finalgroupingname)
+            );
         }
 
         $mform->set_data($toform);
         $this->print_header_and_tabs($cm, $course, $quiz, 'editquizsettings');
         $mform->display();
 
-        // Create Dispatch grades to other group members button
+        // Create Dispatch grades to other group members button.
 
         $pageoptions['mode'] = "group";
 
-        $formdispatch = new quiz_group_dispatchgrade_form($formparams, 'post');
-
+        $formdispatch = new quiz_group_dispatchgrade_form(null, $formparams);
 
         if ($fromformdispatch = $formdispatch->get_data()) {
             dispatch_grade($quiz, $groupingid);
         }
 
-
         $formdispatch->set_data($toform);
         $formdispatch->display();
 
-
     }
-
-
-
 
 }

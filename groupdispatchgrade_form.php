@@ -39,7 +39,7 @@ class quiz_group_dispatchgrade_form extends moodleform {
 
     protected function definition() {
 
-        // todo: disable if no attempt
+        // Todo: disable if no attempt.
 
         $mformdispatch = $this->_form;
         $mformdispatch->addElement('header', 'quizgroupdispatchgrades', get_string('titleapply', 'quiz_group'));
@@ -47,11 +47,12 @@ class quiz_group_dispatchgrade_form extends moodleform {
         $mformdispatch->addElement('hidden', 'groupingid');
         $mformdispatch->setType('groupingid', PARAM_INT);
 
-        // submit button
+        // Submit button.
         $mformdispatch->addElement('submit', 'dispatch', get_string('apply', 'quiz_group'));
     }
 
-    function validation($data, $files) {
-        // No form validation needed.
+    public function validation($data, $files) {
+        // No form validation needed yet.
+        return [];
     }
 }
