@@ -24,10 +24,10 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2019042900;
-$plugin->requires  = 2016051900;
+$plugin->version   = 2023060100;
+$plugin->requires  = 2022112803;
 $plugin->component = 'quiz_group';
 
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v3.1-r3';
+$plugin->release   = 'v4.1-r1';
 

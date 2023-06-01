@@ -142,7 +142,8 @@ function create_groupattempt_from_attempt($attempt, $courseid) {
     $grpatt = new stdClass();
     $grpatt->attemptid = $attempt->id;
     $grpatt->quizid = $quizid;
-    $grpatt->groupingid =
+    $grpatt->userid = $userid;
+    $grpatt->groupingid = $groupingid;
     $grpatt->timemodified = time();
 
     $grpatt->groupid = get_user_group_for_groupquiz($userid, $quizid, $courseid, $groupingid);

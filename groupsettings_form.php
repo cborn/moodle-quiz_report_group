@@ -63,6 +63,15 @@ class quiz_group_settings_form extends moodleform {
         // Create select element and pre-select current value.
         $mform->addElement('select', 'sel_groupingid', get_string('teamsubmissiongroupingid', 'assign'), $options);
 
+        foreach ($this->_customdata as $name => $value) {
+            $mform->addElement('hidden', $name, $value);
+            if ($name == 'mode') {
+                $mform->setType($name, PARAM_ALPHA);
+            } else {
+                $mform->setType($name, PARAM_INT);
+            }
+        }
+
         // Submit button.
         $mform->addElement('submit', 'savechanges', get_string('savechanges', 'quiz_group'));
     }
