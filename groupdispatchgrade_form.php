@@ -47,6 +47,15 @@ class quiz_group_dispatchgrade_form extends moodleform {
         $mformdispatch->addElement('hidden', 'groupingid');
         $mformdispatch->setType('groupingid', PARAM_INT);
 
+        foreach ($this->_customdata as $name => $value) {
+            $mformdispatch->addElement('hidden', $name, $value);
+            if ($name == 'mode') {
+                $mformdispatch->setType($name, PARAM_ALPHA);
+            } else {
+                $mformdispatch->setType($name, PARAM_INT);
+            }
+        }
+
         // Submit button.
         $mformdispatch->addElement('submit', 'dispatch', get_string('apply', 'quiz_group'));
     }

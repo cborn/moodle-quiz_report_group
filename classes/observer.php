@@ -198,6 +198,10 @@ class quiz_group_observer {
             if (!empty($event->other['reset_options']['reset_groups_remove'])) {
                 quiz_process_grp_deleted_in_course($event->courseid);
             }
+
+            if ($event->other['reset_options']['reset_gradebook_grades'] || $event->other['reset_options']['reset_quiz_attempts']) {
+                quiz_process_delete_group_attempts($event->courseid);
+            }
         }
 
         self::$resetinprogress = null;

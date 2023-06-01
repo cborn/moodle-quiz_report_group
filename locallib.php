@@ -142,7 +142,8 @@ function create_groupattempt_from_attempt($attempt, $courseid) {
     $grpatt = new stdClass();
     $grpatt->attemptid = $attempt->id;
     $grpatt->quizid = $quizid;
-    $grpatt->groupingid =
+    $grpatt->userid = $userid;
+    $grpatt->groupingid = $groupingid;
     $grpatt->timemodified = time();
 
     $grpatt->groupid = get_user_group_for_groupquiz($userid, $quizid, $courseid, $groupingid);
@@ -188,6 +189,8 @@ function dispatch_grade($quiz, $groupingid) {
             }
             // If user not in grouping do not create grp_attempt.
         }
+
+        $grpattemptsarray = $DB->get_records('quiz_group_attempts', array('quizid' => $quizid, 'groupingid' => $groupingid));
     }
 
     foreach ($grpattemptsarray as $grpattempt) {
@@ -297,4 +300,23 @@ function quiz_process_grp_deleted_in_course($courseid) {
         }
     }
 
+}
+
+function quiz_process_delete_group_attempts($courseid) {
+    global $DB;
+
+    // Get all course quizs id.
+    $quizsid = $DB->get_records('quiz', array('course' => $courseid), '', 'id, name');
+
+    // Get all grp attempts foreach quizs id ang groups not in list (--> deleted).
+    foreach ($quizsid as $key => $q) {
+        $sql = "SELECT id FROM {quiz_group_attempts} WHERE quizid = ?";
+        $grpattemptsid = $DB->get_records_sql($sql, [$q->id]);
+        // Delete each grp attempt from deleted grp.
+        foreach ($grpattemptsid as $ga) {
+            // Delete record in DB.
+            $attid = $ga->id;
+            $DB->delete_records('quiz_group_attempts', array('id' => $attid));
+        }
+    }
 }

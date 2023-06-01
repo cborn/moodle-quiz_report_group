@@ -74,7 +74,7 @@ class quiz_group_report extends quiz_default_report {
         $boolhasattempts = quiz_has_attempts($quiz->id);
 
          // Params for both Forms.
-        $formparams = array('quizid' => $quiz->id, 'idnumber' => $cm->id,  'hasattempts' => $boolhasattempts);
+        $formparams = array('quizid' => $quiz->id, 'id' => $cm->id,  'hasattempts' => $boolhasattempts, 'mode' => 'group');
         $toform = array("sel_groupingid" => $groupingid);
 
         // Create quiz group setting form.
